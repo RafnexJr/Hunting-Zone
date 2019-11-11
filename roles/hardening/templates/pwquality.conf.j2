@@ -1,0 +1,12 @@
+{{ ansible_managed | comment }}
+
+difok           = {{ password_differents }}
+minlen          = {{ password_min_length }}
+dcredit         = {{ password_number }}
+ucredit         = {{ password_upper_letter }}
+lcredit         = {{ password_lower_letter }}
+ocredit         = {{ password_other_char }}
+minclass        = {{ password_char_class }}
+maxrepeat       = {{ password_max_repeat }}
+maxclassrepeat  = {{ password_max_class_repeat }}
+gecoscheck      = 1

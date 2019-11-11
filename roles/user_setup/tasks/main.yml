@@ -1,0 +1,79 @@
+---
+
+# @action User and group # Creates the listed groups
+- name: Create groups
+  group:
+    name: "{{ item.name }}"
+  with_items: "{{ groups_to_create }}"
+
+# @action User and group # Creates the listed users
+- name: Create users
+  user:
+    name: "{{ item.username }}"
+    group: "{{ item.group | default(default_users_group) }}"
+    # empty string removes user from all secondary groups
+    groups: "{{ item.groups | join(',') if 'groups' in item else '' }}"
+    append: "{{ item.append | default(omit) }}"
+    shell: "{{ item.shell if item.shell is defined else users_default_shell }}"
+    password: "{{ item.password if item.password is defined else '!' }}"
+    comment: "{{ item.name if item.name is defined else '' }}"
+    uid: "{{ item.uid | default(omit) }}"
+    home: "{{ item.home | default('/home/' + item.username) }}"
+    createhome: "{{ 'yes' if users_create_homedirs else 'no' }}"
+    generate_ssh_key: "{{ item.generate_ssh_key | default(omit) }}"
+    update_password: "{{ item.update_password | default(omit) }}"
+  with_items: "{{ users_to_create }}"
+
+- name: Add user to wheel group
+  user:
+    name: "{{ item.username }}"
+    groups: ["wheel"]
+    append: yes
+  when: ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'CentOS' and item.isadmin
+  with_items: "{{ users_to_create }}"
+
+- name: Add users to sudo group
+  user:
+    name: "{{ item.username }}"
+    groups: ["sudo"]
+    append: yes
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu' and item.isadmin
+  with_items: "{{ users_to_create }}"
+
+# @todo improvement # Add option to install only the specified ssh keys instead of adding them
+- name: Install ssh keys
+  authorized_key:
+    user: "{{ item.0.username }}"
+    key: "{{ item.1 }}"
+    path: "{{ item.0.home | default('/home/' + item.0.username) }}/{{ authorized_keys_file }}"
+  with_subelements:
+    - "{{ users_to_create }}"
+    - ssh_key
+    - skip_missing: yes
+
+- name: Setup user profiles
+  blockinfile:
+    block: "{{ item.profile }}"
+    dest: "{{ item.home | default('/home/' + item.username) }}/.profile"
+    owner: "{{ item.username }}"
+    group: "{{ item.group | default(default_users_group) }}"
+    mode: 0644
+    create: yes
+  when: users_create_homedirs and item.profile is defined
+  with_items: "{{ users_to_create }}"
+
+# @action User and group # Removes the listed users
+- name: Remove users
+  user:
+    name: "{{ item.username }}"
+    state: absent
+    remove: "{{ item.purge | default(omit) }}"
+    force: "{{ item.force | default(omit) }}"
+  with_items: "{{ users_to_delete }}"
+
+# @action User and group # Removes the listed groups
+- name: Remove groups
+  group:
+    name: "{{ item.name }}"
+    state: absent
+  with_items: "{{ groups_to_delete }}"

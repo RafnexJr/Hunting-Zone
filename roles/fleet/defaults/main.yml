@@ -1,0 +1,11 @@
+---
+# defaults file for fleet
+
+mysql:
+  root_password: secure.default.Zv2xLWN
+  repo_url: https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
+  hosts:
+    - "{{ ansible_hostname }}"
+    - "127.0.0.1"
+    - "::1"
+    - "localhost"

@@ -1,0 +1,7 @@
+---
+
+- name: Include basic setup
+  include: 01_basic.yml
+
+- name: Include sshd hardening
+  include: 02_ssh.yml

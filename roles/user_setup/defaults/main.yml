@@ -1,0 +1,54 @@
+---
+
+##### User creation #####
+#
+# @var default_users_group: users # Default group that users get added to
+default_users_group: users
+#
+# @var users_default_shell: /bin/bash # Default shell that gets added to new users
+users_default_shell: /bin/bash
+#
+# @var users_create_homedirs: yes # If homedirectories for new users should be created or not
+users_create_homedirs: yes
+#
+# @var authorized_keys_file: ".ssh/authorized_keys" # File in which the specified keys are appended
+authorized_keys_file: ".ssh/authorized_keys"
+
+##### Variables to define #####
+#
+# Generate passwords with the command mkpasswd -m sha-512 <password>
+#
+# @var users_to_create # List of users that should be created
+users_to_create: []
+# @example # How to create a user
+# users_to_create:
+#   - username: u0001
+#     name: John Doe
+#     groups: ['wheel', 'global-admin']
+#     append: yes
+#     password: $6$PIEoUzuZQC6FqS....
+#     update_password: always
+#     profile: |
+#       alias ll='ls -al'
+#     ssh_key:
+#       - "ecdsa-sha2-nistp521 AAAA...."
+#       - "ecdsa-sha2-nistp521 AAAA...."
+# @end
+#
+# @var users_to_delete # List of users that should be removed
+users_to_delete: []
+# @example # How to remove users
+# users_to_delete:
+#   - username: foo
+#     uid: 1001
+#     remove: yes
+#     force: yes
+#   - username: bar
+# @end
+#
+# @var groups_to_create # List of groups that are created
+groups_to_create: []
+#
+# @var groups_to_delete # List of groups that are removed
+groups_to_delete: []
+#

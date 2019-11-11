@@ -1,0 +1,63 @@
+{{ ansible_managed | comment }}
+
+## NETWORK
+## -------
+Protocol 2
+Port 22
+AddressFamily inet
+
+## CIPHER
+## ------
+Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,3des-cbc,aes192-cbc,aes256-cbc
+
+## KEYS
+## ----
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+## LOGGING
+## -------
+SyslogFacility AUTHPRIV
+LogLevel VERBOSE
+
+## AUTHENTICATION
+## --------------
+LoginGraceTime 1m
+PermitRootLogin no
+MaxAuthTries 3
+MaxSessions 2
+PermitEmptyPasswords no
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+UsePAM yes
+
+## KEY AUTHENTICATION
+## --- --------------
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+
+## TIMEOUT
+## -------
+ClientAliveInterval 300
+ClientAliveCountMax 0
+
+## SECURITY
+## --------
+IgnoreRhosts yes
+HostbasedAuthentication no
+PermitUserEnvironment no
+X11Forwarding no
+GSSAPIAuthentication no
+Banner /etc/ssh/sshd_banner
+AllowTcpForwarding no
+Compression no
+TCPKeepAlive no
+UseDNS no
+AllowAgentForwarding no
+
+## SUBSYSTEM
+## ---------
+Subsystem sftp internal-sftp
+
+AllowGroups {{ project_prefix }}-admin

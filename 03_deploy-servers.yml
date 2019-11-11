@@ -1,0 +1,6 @@
+---
+
+- hosts: fleet
+  become: yes
+  roles:
+    - fleet

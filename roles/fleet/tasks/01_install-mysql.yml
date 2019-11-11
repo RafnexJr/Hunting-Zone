@@ -1,0 +1,47 @@
+---
+
+- name: Install MySQL repository
+  yum:
+    name: "{{ mysql.repo_url }}"
+    state: present
+
+- name: Install MySQL server and Python library
+  yum:
+    name: [ "mysql-server", "MySQL-python"]
+    state: present
+
+- name: Start MySQL server
+  service:
+    name: mysqld
+    state: started
+    enabled: yes
+
+- name: Change root password
+  mysql_user:
+    name: root
+    host: "{{ item }}"
+    password: "{{ mysql.root_password }}"
+    priv: "*.*:ALL,GRANT"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    check_implicit_admin: true
+  with_items: "{{ mysql.hosts }}"
+
+- name: Deploy `/root/.my.cnf` with MySQL root credentials
+  template:
+    src: my.cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    mode: 0600
+  notify: Restart MySQL
+
+- name: Remove test database
+  mysql_db:
+    name: test
+    state: absent
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Remove anonymous user accounts
+  mysql_user:
+    name: ""
+    host_all: yes
+    state: absent

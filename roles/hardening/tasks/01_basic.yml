@@ -1,0 +1,5 @@
+- name: Update all packages on the system
+  package:
+    name: "*"
+    state: latest
+  when: update

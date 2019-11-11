@@ -1,0 +1,7 @@
+---
+# handlers file for fleet
+
+- name: Restart MySQL
+  service:
+    name: mysqld
+    state: restarted
