@@ -5,7 +5,7 @@
     name: epel-release
     state: present
 
-- name: Write sshd BANNER
+- name: Write sshd banner
   copy:
     src: "sshd_banner"
     dest: "/etc/ssh/sshd_banner"

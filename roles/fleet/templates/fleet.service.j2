@@ -1,0 +1,22 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Kolide Fleet
+After=network.target
+
+[Service]
+LimitNOFILE=8192
+ExecStart=/usr/bin/fleet serve \
+  --mysql_address=127.0.0.1:3306 \
+  --mysql_database=kolide \
+  --mysql_username=fleet \
+  --mysql_password={{ fleet_mysql_user_password }} \
+  --redis_address=127.0.0.1:6379 \
+  --server_address=fleet.{{ project_domain }}:443 \
+  --server_cert={{ fleet_configuration_directory }}/certificate.pem \
+  --server_key={{ fleet_configuration_directory }}/private_key.pem \
+  --auth_jwt_key={{ fleet_auth_key }} \
+  --logging_json
+
+[Install]
+WantedBy=multi-user.target

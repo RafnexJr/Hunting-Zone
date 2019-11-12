@@ -1,0 +1,48 @@
+---
+
+- name: Install unzip package
+  yum:
+    name: unzip
+    state: present
+
+- name: Create temp Fleet dir
+  file:
+    path: /tmp/fleet
+    state: directory
+
+- name: Unzip Fleet package
+  unarchive:
+    src: "{{ fleet_url }}"
+    dest: /tmp/fleet
+    remote_src: yes
+
+- name: Copy binaries to bin folder
+  copy:
+    src: /tmp/fleet/linux/
+    dest: /usr/bin/
+    owner: root
+    group: root
+    mode: u+rwx,g+rx,o+rx
+    remote_src: yes
+
+- name: Create Fleet MySQL database
+  mysql_db:
+    name: kolide
+    state: present
+
+- name: Create Fleet MySQL user
+  mysql_user:
+    name: fleet
+    password: "{{ fleet_mysql_user_password }}"
+    priv: 'kolide.*:ALL'
+    state: present
+
+- name: Install Redis
+  yum:
+    name: redis
+    state: present
+
+- name: Start Redis
+  service:
+    name: redis
+    state: started

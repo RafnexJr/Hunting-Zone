@@ -2,13 +2,20 @@
 
 - name: Install MySQL repository
   yum:
-    name: "{{ mysql.repo_url }}"
+    name: "{{ mysql_repo_url }}"
     state: present
 
 - name: Install MySQL server and Python library
   yum:
     name: [ "mysql-server", "MySQL-python"]
     state: present
+  register: mysql_install
+
+- name: Add workaround for outdated Ansible module
+  lineinfile:
+    path: /etc/my.cnf
+    line: default_authentication_plugin=mysql_native_password
+    insertafter: "^[mysqld]"
 
 - name: Start MySQL server
   service:
@@ -16,15 +23,24 @@
     state: started
     enabled: yes
 
-- name: Change root password
+- name: Acquire temporary root pass
+  shell: >
+    awk '$0 ~ "temporary password" {print $13}' /var/log/mysqld.log
+  become: yes
+  register: mysql_root_temp_password
+  when: mysql_install.changed
+
+- name: update mysql root password for all root accounts from local servers
   mysql_user:
     name: root
     host: "{{ item }}"
-    password: "{{ mysql.root_password }}"
+    password: "{{ mysql_root_password }}"
     priv: "*.*:ALL,GRANT"
-    login_unix_socket: /var/run/mysqld/mysqld.sock
-    check_implicit_admin: true
-  with_items: "{{ mysql.hosts }}"
+    login_user: root
+    login_password: "{{ mysql_root_temp_password.stdout }}"
+    state: present
+  with_items: "{{ mysql_hosts }}"
+  when: mysql_install.changed
 
 - name: Deploy `/root/.my.cnf` with MySQL root credentials
   template:
@@ -38,7 +54,6 @@
   mysql_db:
     name: test
     state: absent
-    login_unix_socket: /var/run/mysqld/mysqld.sock
 
 - name: Remove anonymous user accounts
   mysql_user:

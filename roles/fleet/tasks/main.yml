@@ -3,3 +3,12 @@
 
 - name: Include MySQL installation
   include: 01_install-mysql.yml
+
+- name: Include Kolide Fleet installation
+  include: 02_install-fleet.yml
+
+- name: Include certificate generation
+  include: 03_letsencrypt.yml
+
+- name: Include Kolide Fleet configuration
+  include: 04_configure-fleet.yml

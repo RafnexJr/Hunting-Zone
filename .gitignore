@@ -1,0 +1,15 @@
+group_vars
+
+inventory
+
+roles/hardening/files/google_authenticator
+
+terraform/.terraform/plugins/linux_amd64/lock.json
+
+terraform/.terraform/plugins/linux_amd64/terraform-provider-digitalocean_v1.10.0_x4
+
+*.backup
+
+*.tfstate
+
+terraform/seiler.tfvars
