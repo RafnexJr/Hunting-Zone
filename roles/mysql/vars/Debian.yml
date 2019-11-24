@@ -1,0 +1,7 @@
+# Debian Specific Variables
+mysql_repo_url: https://dev.mysql.com/get/mysql-apt-config_0.8.14-1_all.deb
+mysql_packages:
+  - python-mysqldb
+  - mysql-server
+mysql_service: mysql
+mysql_mycnf_path: /etc/mysql/my.cnf

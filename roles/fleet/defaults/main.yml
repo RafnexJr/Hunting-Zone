@@ -1,14 +1,4 @@
 ---
-# defaults file for fleet
-
-mysql_root_password: secure.default.Zv2xLWN
-mysql_repo_url: https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
-mysql_hosts:
-  - "{{ ansible_hostname }}"
-  - "127.0.0.1"
-  - "::1"
-  - "localhost"
 
 fleet_url: https://github.com/kolide/fleet/releases/latest/download/fleet.zip
-fleet_mysql_user_password: secure.default.Zv2xLWN
 fleet_configuration_directory: /etc/fleet

@@ -1,0 +1,5 @@
+---
+# tasks file for mysql
+
+- name: Include MySQL installation
+  include: 01_install-mysql.yml

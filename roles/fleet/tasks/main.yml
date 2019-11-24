@@ -1,14 +1,20 @@
 ---
 # tasks file for fleet
 
-- name: Include MySQL installation
-  include: 01_install-mysql.yml
+- name: Include MySQL role
+  include_role:
+    name: mysql
 
 - name: Include Kolide Fleet installation
-  include: 02_install-fleet.yml
+  include: 01_install-fleet.yml
 
 - name: Include certificate generation
-  include: 03_letsencrypt.yml
+  include: 02_letsencrypt.yml
+  when: letsencrypt
+
+- name: Install local certificates
+  include: 03_local-certs.yml
+  when: not letsencrypt
 
 - name: Include Kolide Fleet configuration
   include: 04_configure-fleet.yml

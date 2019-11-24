@@ -1,0 +1,7 @@
+# RedHat Specific Variables
+mysql_repo_url: https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
+mysql_packages:
+  - mysql-server
+  - MySQL-python
+mysql_service: mysqld
+mysql_mycnf_path: /etc/my.cnf

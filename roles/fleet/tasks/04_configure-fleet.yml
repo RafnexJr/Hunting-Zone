@@ -1,22 +1,5 @@
 ---
 
-- name: Create Fleet configuraiton directory
-  file:
-    path: "{{ fleet_configuration_directory }}"
-    state: directory
-    
-- name: Write Lets Encrypt certificate in configuraiton directory
-  copy:
-    src: "{{ item.source }}"
-    dest: "{{ item.destination }}"
-    remote_src: yes
-  with_items:
-    - { source: "/etc/letsencrypt/live/fleet.seiler.dev/privkey.pem", destination: "{{ fleet_configuration_directory }}/private_key.pem" }
-    - { source: "/etc/letsencrypt/live/fleet.seiler.dev/cert.pem", destination: "{{ fleet_configuration_directory }}/certificate.pem" }
-
-- name: Prepare Fleet database
-  command: "fleet prepare db --mysql_address=127.0.0.1:3306 --mysql_database=kolide --mysql_username=fleet --mysql_password={{ fleet_mysql_user_password }}"
-
 - name: Deploy Fleet service file
   template:
     src: fleet.service.j2
@@ -24,6 +7,11 @@
     owner: root
     group: root
     mode: u+rwx,g+rx,o+rx
+  register: fleet_service_deployment
+
+- name: Prepare Fleet database
+  command: "fleet prepare db --mysql_address=127.0.0.1:3306 --mysql_database=kolide --mysql_username=fleet --mysql_password={{ fleet_mysql_user_password }}"
+  when: fleet_service_deployment.changed
 
 - name: Start Fleet service
   service:
@@ -31,5 +19,10 @@
     state: started
     enabled: yes
 
+- name: Confiugre Fleetctl
+  command: "fleetctl config set --address https://fleet.{{ project_domain }} --rootca {{ fleet_configuration_directory }}/certificate.pem"
+  when: fleet_service_deployment.changed
+
 - name: Configure Fleet admin account
   command: "fleetctl setup --email {{ fleet_mail }} --password {{ fleet_password }}"
+  when: fleet_service_deployment.changed

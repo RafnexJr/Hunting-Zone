@@ -1,8 +1,8 @@
 ---
-# Sensitive MySQL Variables
-# mysql_root_password: sample.GiERKgri5Mv7TA56iPhZ2QfLTYir3L
-
 # Sensitive Fleet Variables
 # fleet_mail: sampelmail@samplemail.xyz
 # fleet_password: sample.4zY2DrHZAX4p6zEqkHiNASsHmBotYp
 # fleet_auth_key: smaple.8T2MJPZZXmNmESq6zDSHTRNu8opmEk
+
+# Let's Encrypt
+letsencrypt: no

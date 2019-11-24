@@ -20,10 +20,17 @@
   copy:
     src: /tmp/fleet/linux/
     dest: /usr/bin/
+    remote_src: yes
+
+- name: Set Fleet binaries permissions
+  file:
+    path: "{{ item }}"
     owner: root
     group: root
-    mode: u+rwx,g+rx,o+rx
-    remote_src: yes
+    mode: '0755'
+  with_items:
+    - /usr/bin/fleet
+    - /usr/bin/fleetctl
 
 - name: Create Fleet MySQL database
   mysql_db:
@@ -37,6 +44,11 @@
     priv: 'kolide.*:ALL'
     state: present
 
+- name: Install EPEL repository
+  yum:
+    name: epel-release
+    state: present
+
 - name: Install Redis
   yum:
     name: redis
@@ -46,3 +58,8 @@
   service:
     name: redis
     state: started
+
+- name: Create Fleet configuraiton directory
+  file:
+    path: "{{ fleet_configuration_directory }}"
+    state: directory

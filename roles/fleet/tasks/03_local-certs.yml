@@ -1,0 +1,9 @@
+---
+
+- name: Copy certifcate and key to the server
+  copy:
+    src: "{{ item.source }}"
+    dest: "{{ item.destination }}"
+  with_items:
+    - { source: "fleet.{{ project_domain }}.key", destination: "{{ fleet_configuration_directory }}/private_key.pem" }
+    - { source: "fleet.{{ project_domain }}.cer", destination: "{{ fleet_configuration_directory }}/certificate.pem" }

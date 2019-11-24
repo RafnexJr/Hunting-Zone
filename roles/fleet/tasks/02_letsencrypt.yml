@@ -1,0 +1,25 @@
+---
+
+- name: Install certbot
+  yum:
+    name: certbot
+    state: present
+
+- name: Check if certificate already exists
+  stat:
+    path: "/etc/letsencrypt/live/fleet.{{ project_domain }}/cert.pem"
+  register: letsencrypt_cert
+
+- name: Generate certificate with letsencrypt
+  command: "certbot certonly --standalone --noninteractive --agree-tos --email {{ fleet_mail }} -d fleet.{{ project_domain }}"
+  become: yes
+  when: letsencrypt_cert.stat.exists == false
+    
+- name: Write Lets Encrypt certificate in configuraiton directory
+  copy:
+    src: "{{ item.source }}"
+    dest: "{{ item.destination }}"
+    remote_src: yes
+  with_items:
+    - { source: "/etc/letsencrypt/live/fleet.seiler.dev/privkey.pem", destination: "{{ fleet_configuration_directory }}/private_key.pem" }
+    - { source: "/etc/letsencrypt/live/fleet.seiler.dev/cert.pem", destination: "{{ fleet_configuration_directory }}/certificate.pem" }
