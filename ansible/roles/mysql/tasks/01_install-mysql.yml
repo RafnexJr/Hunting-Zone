@@ -21,6 +21,11 @@
     update_cache: yes
   when: ansible_os_family == "Debian"
 
+- name: Update APT cache
+  apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
 - name: Install MySQL server and Python library
   package:
     name: "{{ mysql_packages }}"

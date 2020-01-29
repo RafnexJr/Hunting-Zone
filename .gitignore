@@ -1,6 +1,8 @@
-group_vars
+ansible/group_vars
 
-inventory
+ansible/inventory
+
+ansible/exo
 
 roles/hardening/files/google_authenticator
 
@@ -14,8 +16,8 @@ terraform/seiler.tfvars
 
 *.key
 
-00_dev.yml
+ansible/00_dev.yml
 
-terraform/digital_ocean/.terraform
+terraform/*/.terraform
 
-terraform/digital_ocean/seiler.tfvars
+terraform/*/seiler.tfvars

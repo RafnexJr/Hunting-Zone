@@ -1,0 +1,5 @@
+---
+# defaults file for elk
+elastic_repo_rpm_key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+elastic_repo_baseurl: https://artifacts.elastic.co/packages/7.x/yum
+elastic_gpg_key: https://artifacts.elastic.co/GPG-KEY-elasticsearch

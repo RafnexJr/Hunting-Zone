@@ -1,0 +1,22 @@
+---
+# tasks file for elk
+
+- name: Install Elastic RPM key
+  rpm_key:
+    key: "{{ elastic_repo_rpm_key }}"
+    state: present
+
+- name: Install Elastic repository
+  yum_repository:
+    name: elasticsearch
+    description: Elasticsearch repository for 7.x packages
+    file: elastic
+    baseurl: "{{ elastic_repo_baseurl }}"
+    gpgkey: "{{ elastic_gpg_key }}"
+    gpgcheck: yes
+    state: present
+
+- name: Install Elasticsearch
+  yum:  
+    name: elasticsearch
+    state: present

@@ -1,0 +1,32 @@
+---
+
+- name: Set MySQL variables for GRR
+  mysql_variables:
+    variable: max_allowed_packet
+    value: "41943040"
+
+- name: Create GRR MySQL database
+  mysql_db:
+    name: grr
+    state: present
+
+- name: Configure GRR MySQL User
+  mysql_user:
+    name: grr
+    password: "{{ grr_mysql_user_password }}"
+    priv: 'grr.*:ALL'
+    state: present
+
+- name: Get GRR server package
+  get_url:
+    url: "{{ grr_deb_url }}"
+    dest: /tmp/grr.deb
+
+- name: Install GRR server package
+  apt:
+    deb: /tmp/grr.deb
+
+- name: Start GRR service
+  service:
+    name: grr
+    state: started

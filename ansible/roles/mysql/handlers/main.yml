@@ -3,5 +3,5 @@
 
 - name: Restart MySQL
   service:
-    name: mysqld
+    name: "{{ mysql_service }}"
     state: restarted

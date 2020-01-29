@@ -1,6 +1,0 @@
----
-# tasks file for grr
-
-- name: Include MySQL role
-  include_role:
-    name: mysql

@@ -1,0 +1,9 @@
+---
+# tasks file for grr
+
+- name: Include MySQL role
+  include_role:
+    name: mysql
+
+- name: Include GRR installation
+  include: 01_install_grr.yml
